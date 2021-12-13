@@ -4,8 +4,10 @@ import Link from 'next/link';
 import { Link as MuiLink, Paper } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridColumns } from '@mui/x-data-grid';
+import { withIronSessionSsr } from 'iron-session/next';
 
-import { httpNest } from 'utils/http';
+import { httpNext } from 'utils/http';
+import ironConfig from 'utils/iron-config';
 import { Order } from 'utils/models';
 
 import theme from 'styles/theme';
@@ -69,24 +71,38 @@ const OrdersPage = (props: NextPageProps) => {
 
 export default OrdersPage;
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  try {
-    const { data } = await httpNest.get('/orders', {
-      headers: {
-        'x-token': 'r78u1lj3g7n',
-      },
-    });
+export const getServerSideProps: GetServerSideProps = withIronSessionSsr(
+  async (context) => {
+    const account = context.req.session.account;
 
-    return {
-      props: {
-        orders: data,
-      },
-    };
-  } catch (e) {
-    return {
-      props: {
-        orders: [],
-      },
-    };
-  }
-};
+    if (!account) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+
+    try {
+      const { data } = await httpNext.get('/orders', {
+        headers: {
+          cookie: context.req.headers.cookie as string,
+        },
+      });
+
+      return {
+        props: {
+          orders: data,
+        },
+      };
+    } catch (e) {
+      return {
+        props: {
+          orders: [],
+        },
+      };
+    }
+  },
+  ironConfig
+);

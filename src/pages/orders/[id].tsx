@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 
 import {
   Box,
@@ -19,7 +19,14 @@ const OrderDetailsPage: NextPage = () => {
   const router = useRouter();
   const orderId = router.query.id;
 
-  const { data, error } = useSWR(`/orders/${orderId}`, fetcher);
+  const { data, error } = useSWR(`/orders/${orderId}`, fetcher, {
+    onError: (error) => {
+      console.log(error);
+      if (error.response.status === 401 || error.response.status === 403) {
+        Router.push('/login');
+      }
+    },
+  });
 
   console.log({ orderId, data, error });
 

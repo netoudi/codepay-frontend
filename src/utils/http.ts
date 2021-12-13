@@ -9,11 +9,5 @@ export const httpNest = axios.create({
 });
 
 export function fetcher(url: string) {
-  return httpNext
-    .get(url, {
-      headers: {
-        'x-token': 'r78u1lj3g7n',
-      },
-    })
-    .then((response) => response.data);
+  return httpNext.get(url).then((response) => response.data);
 }
