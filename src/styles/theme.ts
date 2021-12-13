@@ -6,13 +6,20 @@ const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#556cd6',
+      main: '#f9cc29',
     },
     secondary: {
-      main: '#19857b',
+      main: '#282b32',
     },
     error: {
       main: red.A400,
+    },
+  },
+  components: {
+    MuiAppBar: {
+      defaultProps: {
+        enableColorOnDark: true,
+      },
     },
   },
 });

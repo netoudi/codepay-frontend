@@ -4,8 +4,11 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 
 import { CacheProvider, EmotionCache } from '@emotion/react';
+import { Container } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
+
+import Navbar from 'components/Navbar';
 
 import createEmotionCache from 'utils/createEmotionCache';
 
@@ -29,7 +32,10 @@ export default function MyApp(props: MyAppProps) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <Component {...pageProps} />
+        <Navbar />
+        <Container style={{ paddingTop: theme.spacing(2) }}>
+          <Component {...pageProps} />
+        </Container>
       </ThemeProvider>
     </CacheProvider>
   );
