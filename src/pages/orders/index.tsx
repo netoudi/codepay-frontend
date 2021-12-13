@@ -1,11 +1,11 @@
-import { GetServerSideProps, NextPage } from 'next';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 
 import { Link as MuiLink, Paper } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridColumns } from '@mui/x-data-grid';
 
-import { http } from 'utils/http';
+import { httpNest } from 'utils/http';
 import { Order } from 'utils/models';
 
 import theme from 'styles/theme';
@@ -14,7 +14,7 @@ export type NextPageProps = {
   orders: Order[];
 };
 
-const OrdersPage: NextPage = (props: NextPageProps) => {
+const OrdersPage = (props: NextPageProps) => {
   console.log(props.orders[0].id);
   const columns: GridColumns = [
     {
@@ -71,7 +71,7 @@ export default OrdersPage;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
-    const { data } = await http.get('/orders', {
+    const { data } = await httpNest.get('/orders', {
       headers: {
         'x-token': 'r78u1lj3g7n',
       },
