@@ -1,6 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
+import Link from 'next/link';
 
-import { Paper } from '@mui/material';
+import { Link as MuiLink, Paper } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridColumns } from '@mui/x-data-grid';
 
@@ -20,6 +21,13 @@ const OrdersPage: NextPage = (props: NextPageProps) => {
       field: 'id',
       headerName: '# ID',
       width: 300,
+      renderCell: (params) => {
+        return (
+          <Link href={`/orders/${params.value}`} passHref>
+            <MuiLink>{params.value}</MuiLink>
+          </Link>
+        );
+      },
     },
     {
       field: 'credit_card_name',
