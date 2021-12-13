@@ -1,12 +1,14 @@
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
+import Router from 'next/router';
 
 import { Link as MuiLink, Paper } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridColumns } from '@mui/x-data-grid';
 import { withIronSessionSsr } from 'iron-session/next';
+import useSWR from 'swr';
 
-import { httpNext } from 'utils/http';
+import { fetcher, httpNext } from 'utils/http';
 import ironConfig from 'utils/iron-config';
 import { Order } from 'utils/models';
 
@@ -17,7 +19,6 @@ export type NextPageProps = {
 };
 
 const OrdersPage = (props: NextPageProps) => {
-  console.log(props.orders[0].id);
   const columns: GridColumns = [
     {
       field: 'id',
@@ -53,6 +54,17 @@ const OrdersPage = (props: NextPageProps) => {
     },
   ];
 
+  const { data } = useSWR('/orders', fetcher, {
+    fallbackData: props.orders,
+    refreshInterval: 5 * 1000, // 5 secounds
+    onError: (error) => {
+      console.log(error);
+      if (error.response.status === 401 || error.response.status === 403) {
+        Router.push('/login');
+      }
+    },
+  });
+
   return (
     <div>
       <Typography component="h1" variant="h4">
@@ -63,7 +75,7 @@ const OrdersPage = (props: NextPageProps) => {
         elevation={3}
         style={{ height: 500, width: '100%', marginTop: theme.spacing(4) }}
       >
-        <DataGrid columns={columns} rows={props.orders} />
+        <DataGrid columns={columns} rows={data} />
       </Paper>
     </div>
   );
